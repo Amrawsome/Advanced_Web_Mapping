@@ -1,0 +1,150 @@
+<!-- templates/home.html-->
+{% extends "base.html" %}
+{% load leaflet_tags %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% load static %}
+<link rel="stylesheet" href="{% static 'polls/style.css' %}">
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    {% leaflet_css %}
+    {% leaflet_js %}
+{% if user.is_authenticated %}
+  <h1 style=" font-size: 7vh; text-wrap: normal;  text-align: center;  background-color:red;">Hi {{ user.username }}!</h1>
+<p style ="font-size: 3vh";>{{ location }}<p>
+ <input type="hidden" id="fname" value ="{{location}}" name="fname"><br><br>
+    <script>
+
+
+    function map_init (map, options) {
+        if (!navigator.geolocation) {
+            console.log("error")
+        } else {
+            updateparkingspot(map)
+        }
+
+    }
+    var HOST = location.protocol + "//" + location.host;
+    var locationMarker;
+    var circle;
+    var geojson = {
+  "type" : "FeatureCollection",
+  "features" : [{"type":"Feature","id":1,"geometry":{"type":"Point","coordinates":[-6.1324223809958927,53.290881800260983]},"properties":{"OBJECTID":1,"Location_ID":"Adelaide Street","Latitude":53.290881800000001,"Longitude":-6.1324223809999996,"ITM_X":724510.97820048686,"ITM_Y":728357.70207096497,}},{"type":"Feature","id":2,"geometry":{"type":"Point","coordinates":[-6.1379236295620458,53.291915819867867]},"properties":{"OBJECTID":2,"Location_ID":"Convent Road 2","Latitude":53.29191582,"Longitude":-6.1379236300000004,"ITM_X":724141.24967042624,"ITM_Y":728463.16961394448}},{"type":"Feature","id":3,"geometry":{"type":"Point","coordinates":[-6.1377579712594512,53.292066969636217]},"properties":{"OBJECTID":3,"Location_ID":"Convent Road 3","Latitude":53.29206697,"Longitude":-6.1377579710000001,"ITM_X":724151.85441624466,"ITM_Y":728480.27364093147}},{"type":"Feature","id":4,"geometry":{"type":"Point","coordinates":[-6.137712355704128,53.292113689678359]},"properties":{"OBJECTID":4,"Location_ID":"Convent Road 4","Latitude":53.292113690000001,"Longitude":-6.1377123549999997,"ITM_X":724154.75974600785,"ITM_Y":728485.55073701299}},{"type":"Feature","id":5,"geometry":{"type":"Point","coordinates":[-6.1376610045876054,53.292158800188432]},"properties":{"OBJECTID":5,"Location_ID":"Convent Road 5","Latitude":53.292158800000003,"Longitude":-6.1376610039999999,"ITM_X":724158.05203972105,"ITM_Y":728490.65868006099}},{"type":"Feature","id":6,"geometry":{"type":"Point","coordinates":[-6.133536384182853,53.290281539693282]},"properties":{"OBJECTID":6,"Location_ID":"Corrig Avenue","Latitude":53.290281540000002,"Longitude":-6.1335363840000001,"ITM_X":724438.46001130017,"ITM_Y":728288.97953444975}},{"type":"Feature","id":7,"geometry":{"type":"Point","coordinates":[-6.1381761208941343,53.295582920432437]},"properties":{"OBJECTID":7,"Location_ID":"Crofton Avenue","Latitude":53.295582920000001,"Longitude":-6.1381761209999999,"ITM_X":724113.78589419939,"ITM_Y":728870.71425171173}},{"type":"Feature","id":8,"geometry":{"type":"Point","coordinates":[-6.1352166391090419,53.294863870252399]},"properties":{"OBJECTID":8,"Location_ID":"Crofton Road","Latitude":53.29486387,"Longitude":-6.1352166390000002,"ITM_X":724313.14060800325,"ITM_Y":728795.86147211539}},{"type":"Feature","id":9,"geometry":{"type":"Point","coordinates":[-6.138645126596546,53.293359690233267]},"properties":{"OBJECTID":9,"Location_ID":"Bloomfield 1","Latitude":53.293359690000003,"Longitude":-6.1386451260000001,"ITM_X":724088.96844044281,"ITM_Y":728622.5540750873}},{"type":"Feature","id":10,"geometry":{"type":"Point","coordinates":[-6.1385740474447159,53.293335639646763]},"properties":{"OBJECTID":10,"Location_ID":"Bloomfield 2","Latitude":53.293335640000002,"Longitude":-6.1385740469999996,"ITM_X":724093.776228623,"ITM_Y":728620.00184008072}},{"type":"Feature","id":11,"geometry":{"type":"Point","coordinates":[-6.1423999364658446,53.295341449639402]},"properties":{"OBJECTID":11,"Location_ID":"Georges Place 2","Latitude":53.295341450000002,"Longitude":-6.1423999360000003,"ITM_X":723832.94263001136,"ITM_Y":728836.52044093364}},{"type":"Feature","id":12,"geometry":{"type":"Point","coordinates":[-6.141347040551663,53.29458337024689]},"properties":{"OBJECTID":12,"Location_ID":"Georges Street Lower","Latitude":53.294583369999998,"Longitude":-6.1413470400000003,"ITM_X":723905.31893748906,"ITM_Y":728754.00557349459}},{"type":"Feature","id":13,"geometry":{"type":"Point","coordinates":[-6.1339726458621771,53.29134517996301]},"properties":{"OBJECTID":13,"Location_ID":"Georges Street Upper 1","Latitude":53.29134518,"Longitude":-6.1339726460000001,"ITM_X":724406.28629070707,"ITM_Y":728406.55500388227}},{"type":"Feature","id":14,"geometry":{"type":"Point","coordinates":[-6.1338224436038393,53.291281050351273]},"properties":{"OBJECTID":14,"Location_ID":"Georges Street Upper 2","Latitude":53.291281050000002,"Longitude":-6.1338224429999997,"ITM_X":724416.48554127919,"ITM_Y":728399.68176198029}},{"type":"Feature","id":15,"geometry":{"type":"Point","coordinates":[-6.1326252756023054,53.29204531001691]},"properties":{"OBJECTID":15,"Location_ID":"Haigh Terrace","Latitude":53.292045309999999,"Longitude":-6.1326252749999997,"ITM_X":724494.06924020231,"ITM_Y":728486.79469917482}},{"type":"Feature","id":16,"geometry":{"type":"Point","coordinates":[-6.1331461474813418,53.294504280111845]},"properties":{"OBJECTID":16,"Location_ID":"Harbour","Latitude":53.294504279999998,"Longitude":-6.1331461479999998,"ITM_X":724452.19846575381,"ITM_Y":728759.45978665864}},{"type":"Feature","id":17,"geometry":{"type":"Point","coordinates":[-6.1398154448473621,53.295063660385757]},"properties":{"OBJECTID":17,"Location_ID":"Kellys Avenue","Latitude":53.295063659999997,"Longitude":-6.139815445,"ITM_X":724006.01969094609,"ITM_Y":728810.09745682275}},{"type":"Feature","id":18,"geometry":{"type":"Point","coordinates":[-6.1346303373497211,53.293748299617647]},"properties":{"OBJECTID":18,"Location_ID":"Marine Road","Latitude":53.293748299999997,"Longitude":-6.134630338,"ITM_X":724355.46225554449,"ITM_Y":728672.76904141204}},{"type":"Feature","id":19,"geometry":{"type":"Point","coordinates":[-6.1356694585907485,53.292730180330274]},"properties":{"OBJECTID":19,"Location_ID":"Marine Road 1","Latitude":53.29273018,"Longitude":-6.1356694589999998,"ITM_X":724289.15177368303,"ITM_Y":728557.69006254629}},{"type":"Feature","id":20,"geometry":{"type":"Point","coordinates":[-6.135720493800215,53.292674889997635]},"properties":{"OBJECTID":20,"Location_ID":"Marine Road 2","Latitude":53.292674890000001,"Longitude":-6.1357204940000001,"ITM_X":724285.91028667882,"ITM_Y":728551.44999992161}},{"type":"Feature","id":21,"geometry":{"type":"Point","coordinates":[-6.1357810980180663,53.292621500185014]},"properties":{"OBJECTID":21,"Location_ID":"Marine Road 3","Latitude":53.292621500000003,"Longitude":-6.1357810979999998,"ITM_X":724282.02540174499,"ITM_Y":728545.40467945521}},{"type":"Feature","id":22,"geometry":{"type":"Point","coordinates":[-6.1312603134156518,53.290414439544641]},"properties":{"OBJECTID":22,"Location_ID":"Melifont Avenue","Latitude":53.290414439999999,"Longitude":-6.1312603140000004,"ITM_X":724589.80515972199,"ITM_Y":728307.7316496484}},{"type":"Feature","id":23,"geometry":{"type":"Point","coordinates":[-6.1307373663743938,53.293203029851078]},"properties":{"OBJECTID":23,"Location_ID":"National Yacht Club 1","Latitude":53.293203030000001,"Longitude":-6.130737366,"ITM_X":724616.54952452646,"ITM_Y":728618.88781722588}},{"type":"Feature","id":24,"geometry":{"type":"Point","coordinates":[-6.1306716518296005,53.293152530343868]},"properties":{"OBJECTID":24,"Location_ID":"National Yacht Club 2","Latitude":53.29315253,"Longitude":-6.1306716520000002,"ITM_X":724621.07698964619,"ITM_Y":728613.38406145002}},{"type":"Feature","id":25,"geometry":{"type":"Point","coordinates":[-6.1306166664000585,53.293115260009884]},"properties":{"OBJECTID":25,"Location_ID":"National Yacht Club 3","Latitude":53.29311526,"Longitude":-6.130616667,"ITM_X":724624.85076003894,"ITM_Y":728609.33349785767}},{"type":"Feature","id":26,"geometry":{"type":"Point","coordinates":[-6.1353595493044999,53.291007799823859]},"properties":{"OBJECTID":26,"Location_ID":"Northumberland Avenue 1","Latitude":53.291007800000003,"Longitude":-6.1353595500000004,"ITM_X":724314.8116531265,"ITM_Y":728366.60591838881}},{"type":"Feature","id":27,"geometry":{"type":"Point","coordinates":[-6.135493660746608,53.29081259971192]},"properties":{"OBJECTID":27,"Location_ID":"Northumberland Avenue 2 ","Latitude":53.290812600000002,"Longitude":-6.1354936609999999,"ITM_X":724306.43818227539,"ITM_Y":728344.6556316138}},{"type":"Feature","id":28,"geometry":{"type":"Point","coordinates":[-6.1357495912815425,53.290236430342041]},"properties":{"OBJECTID":28,"Location_ID":"Northumberland Avenue 3","Latitude":53.29023643,"Longitude":-6.1357495909999997,"ITM_X":724291.04971976345,"ITM_Y":728280.10866244009}},{"type":"Feature","id":29,"geometry":{"type":"Point","coordinates":[-6.1292619674346049,53.290078699807751]},"properties":{"OBJECTID":29,"Location_ID":"Park Road 1","Latitude":53.290078700000002,"Longitude":-6.1292619679999998,"ITM_X":724724.0004617495,"ITM_Y":728273.86532040662}},{"type":"Feature","id":30,"geometry":{"type":"Point","coordinates":[-6.1287013862745754,53.290918030124068]},"properties":{"OBJECTID":30,"Location_ID":"Park Road 2","Latitude":53.29091803,"Longitude":-6.1287013869999996,"ITM_X":724758.92535200401,"ITM_Y":728368.22348493699}},{"type":"Feature","id":31,"geometry":{"type":"Point","coordinates":[-6.1286638355027803,53.290963720133732]},"properties":{"OBJECTID":31,"Location_ID":"Park Road 3","Latitude":53.290963720000001,"Longitude":-6.1286638360000003,"ITM_X":724761.29546724819,"ITM_Y":728373.3722842579}},{"type":"Feature","id":32,"geometry":{"type":"Point","coordinates":[-6.1373948257893067,53.291384829706885]},"properties":{"OBJECTID":32,"Location_ID":"Patrick Street 1","Latitude":53.291384829999998,"Longitude":-6.1373948260000004,"ITM_X":724178.04068510851,"ITM_Y":728405.01323224767}},{"type":"Feature","id":33,"geometry":{"type":"Point","coordinates":[-6.1377161315640612,53.29109280018826]},"properties":{"OBJECTID":33,"Location_ID":"Patrick Street 2","Latitude":53.291092800000001,"Longitude":-6.1377161320000004,"ITM_X":724157.46857148665,"ITM_Y":728371.96507830347}},{"type":"Feature","id":34,"geometry":{"type":"Point","coordinates":[-6.1328351522693687,53.294469970140511]},"properties":{"OBJECTID":34,"Location_ID":"Royal St George Yacht Club 1","Latitude":53.294469970000002,"Longitude":-6.1328351520000002,"ITM_X":724473.02841836866,"ITM_Y":728756.18438484636}},{"type":"Feature","id":35,"geometry":{"type":"Point","coordinates":[-6.1327506251262074,53.294436600277955]},"properties":{"OBJECTID":35,"Location_ID":"Royal St George Yacht Club 2","Latitude":53.294436599999997,"Longitude":-6.1327506249999999,"ITM_X":724478.759809223,"ITM_Y":728752.61906930176}},{"type":"Feature","id":36,"geometry":{"type":"Point","coordinates":[-6.1365989347178234,53.293425649850349]},"properties":{"OBJECTID":36,"Location_ID":"Sussex Street","Latitude":53.293425650000003,"Longitude":-6.1365989340000002,"ITM_X":724225.17464741797,"ITM_Y":728633.44811790669}}]
+}
+    if( document.querySelector('input').value!=="('', '')") {
+
+        const val = document.querySelector('input').value;
+        console.log(val)
+        let newer = val.replace(/[{()}]/g, '');
+        console.log(newer)
+        let f = newer.replace(",", '');
+        console.log(f)
+        numarray = f.match(/\d+(?:\.\d+)?/g).map(Number)
+        console.log(numarray)
+        numarray[1] = numarray[1] * -1
+        console.log(numarray)
+
+    }
+    else if(document.querySelector('input').value==="('', '')"){
+        numarray=[];
+    }
+    var iconMark=L.icon({
+                iconUrl:'placeholder.png',
+                iconSize:     [38, 95],
+                popupAnchor:  [-3, -76]
+            });
+
+
+
+        function map_init_basic(map, options) {
+            var pos;
+            map.setView([53.5, -8.5], 11);
+            updateparkingspot(map);
+        }
+
+        function setDataLocation(map) {
+    // do something with "text"
+            console.log(numarray)
+            if(numarray.length!=0){
+                map.flyTo([numarray[0], numarray[1]], 18);
+                console.log("wrong")
+            }
+            else if(numarray.length==0){
+              map.flyTo([53.292547, -6.135840], 15);
+            }
+        }
+
+
+
+        function update_db(map) {
+            L.geoJSON(geojson,{
+                    onEachFeature: function (feature,layer){
+                        layer.bindPopup('<p>'+feature.properties.Location_ID+'<p>')
+                    }
+                },{icon:iconMark}).addTo(map).on('click',function(e){
+
+
+            console.log()
+            let locString = e.latlng.lng + ", " + e.latlng.lat;
+            let longitude = e.latlng.lng
+            let latitude = e.latlng.lat
+            console.log(locString)
+            console.log()
+            $.ajax({
+                type: "POST",
+                headers: {
+                'X-CSRFToken': "{{ csrf_token }}"
+                },
+            url: HOST + "/updatedb/",
+            data: {
+            point: locString,
+                longitude,
+                latitude
+            }
+            }).done(function (data, status, xhr) {
+            console.log(data["message"])
+            var originalMsg = $(".toast-body").html();
+            $(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
+            }).fail(function (xhr, status, error) {
+            console.log(error);
+            var originalMsg = $(".toast-body").html();
+            $(".toast-body").html(originalMsg + "<br/>" + error);
+            }).always(function () {
+            console.log("find_loc_ed finished");
+            $(".toast").toast('show');
+
+            });
+            })
+        }
+        function updateparkingspot(map) {
+            setDataLocation(map);
+            update_db(map);
+    }
+  </script>
+
+    {% leaflet_map "yourmap" callback="window.map_init_basic"%}
+    <style>
+
+    .leaflet-container {  /* all maps */
+        width:  70vw;
+        height: 50vh;
+        margin: auto;
+    }
+
+    #specialbigmap {
+        height: 800px;
+    }
+
+    /* Resize the "display_raw" textbox */
+    .django-leaflet-raw-textarea {
+        width: 100%;
+    }
+
+</style>
+    <h2 style=" font-size: 4vh; text-align: center";>Clicked Marker Will Be Saved And The Map Will Start From There</h2>>
+  <h1 style=" font-size:3vh; text-align: center";><a href="{% url 'logout' %}">Log Out</a></h1>
+{% else %}
+  <p style="font-size: 3vh; text-align: center;";>You are not logged in</p>
+  <a style="font-size: 5vh; text-align: center;"; href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}
